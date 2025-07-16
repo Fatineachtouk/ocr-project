@@ -31,7 +31,8 @@ cd ocr-project
 ```
 
 ### 2. Set Up the Main Environment
-
+First Make sure you have python 3.10 installed!
+if not, you can install it here : [python 3.10](https://www.python.org/downloads/release/python-3100/)
 <details> <summary> Windows</summary>
   
 ```bash
