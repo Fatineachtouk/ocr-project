@@ -36,7 +36,7 @@ if not, you can install it here : [python 3.10](https://www.python.org/downloads
 <details> <summary> Windows</summary>
   
 ```bash
-python -m venv main_env
+python3.10 -m venv main_env
 main_env\Scripts\activate
 pip install -r requirements.txt
 deactivate
@@ -45,7 +45,7 @@ deactivate
 </details> <details> <summary> macOS / Linux</summary>
 
 ```bash
-python3 -m venv main_env
+python3.10 -m venv main_env
 source main_env/bin/activate
 pip install -r requirements.txt
 deactivate
@@ -57,14 +57,14 @@ deactivate
 <details> <summary> Windows</summary>
   
 ```bash
-python -m venv kraken_env
+python3.10 -m venv kraken_env
 kraken_env\Scripts\activate
 pip install -r requirements-kraken.txt
 ```
 </details> <details> <summary> macOS / Linux</summary>
 
 ```bash
-python3 -m venv kraken_env
+python3.10 -m venv kraken_env
 source kraken_env/bin/activate
 pip install -r requirements-kraken.txt
 ```
