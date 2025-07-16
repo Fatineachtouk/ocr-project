@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is an OCR (Optical Character Recognition) and HTR (Handwritten Text Recognition) project that extracts printed or handwritten text from invoices and documents.
+This is an OCR (Optical Character Recognition) and HTR (Handwritten Text Recognition) project that extracts printed or handwritten text from invoices and documents. Then an LLM model extracts the given metadata with descrition from the extracted text and returns a JSON format.
 
 Multiple open-source models were used:
 
@@ -69,7 +69,7 @@ pip install -r requirements-kraken.txt
 ```
 </details>
 
-### . Download Language Identification File (FastText)
+## Download Language Identification File (FastText)
 Download the [lid.176.bin](https://fasttext.cc/docs/en/language-identification.html) file from fastText and place it in the project folder (ocr-project).
 
 ## Running the APIs
