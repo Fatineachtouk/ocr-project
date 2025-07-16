@@ -1,12 +1,18 @@
-import json
+import os
 import re
+import json
+import ollama
 import textwrap
 from ocr_pipeline import ocr
-import ollama
+from dotenv import load_dotenv 
+
+load_dotenv()
+
+model=os.getenv('LLM_MODEL_NAME', 'gemma3:4b')
 
 def query_ollama(prompt: str) -> str:
     response = ollama.chat(
-        model='gemma3:4b', # gemma3:4b-it-qat is the quantisized model for efficiency
+        model=model, 
         messages=[{'role': 'user', 'content': prompt}]
     )
     return response['message']['content']
@@ -36,18 +42,18 @@ def llm(input_data):
 
     prompt = f"""
 You are a meticulous document analyzer.
-Ignore police signature, security terms, expiration dates unless asked. Focus only on the descriptions.
+Ignore police signature, security terms, expiration dates unless asked. Focus only on the descriptions given.
 Correct any OCR spelling issues if detected.
 Return a valid, clean JSON with 3 keys:
 - "content": the cleaned and corrected OCR content
 - "classification": the best matching class (if provided)
 - "metadata": a list of objects with "fieldName" and "value" (even if null)
-
+Don't hallucinate!
 Language Rules:
 - If two or more languages are present, prefer French if found.
 - If one language dominates, use it for the output.
 - OCR text is line-based; order matters.
-- First/last names may be uppercase.
+- First/last names may be uppercase especially in ID documents.
 
 OCR Content:
 {textwrap.fill(raw_text, 80)}

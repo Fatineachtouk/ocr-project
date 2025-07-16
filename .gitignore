@@ -1,5 +1,1 @@
-lid.176,bin
-__pycache__/
-*.log
-*.bin
-*.mlmodel
+.env

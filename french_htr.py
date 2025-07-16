@@ -1,6 +1,3 @@
-
-#C:\Users\pc\conda\envs\kraken\python.exe
-
 import warnings
 import logging
 from PIL import Image

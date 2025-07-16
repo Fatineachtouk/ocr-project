@@ -12,12 +12,13 @@ import warnings
 import requests
 import numpy as np
 from PIL import Image
+from dotenv import load_dotenv
 from paddleocr import PaddleOCR
 from transformers import logging as hf_logging
 from transformers import VisionEncoderDecoderModel, TrOCRProcessor
 
 
-#C:\Users\pc\conda\envs\ocr-htr\python.exe
+load_dotenv()
 
 # Huggingface hub
 logging.getLogger("huggingface_hub").setLevel(logging.ERROR)
@@ -65,6 +66,8 @@ def is_gpu_available():
         return False
 
 use_gpu = is_gpu_available()
+
+KRAKEN_API_URL = os.getenv("KRAKEN_API_URL", "http://127.0.0.1:5001/ocr")
 
 def preprocessing(image):
     """
@@ -348,7 +351,7 @@ def ocr(path):
             for img in images:
                 if not is_clear(img):
                     img = preprocessing(img)
-                result = ocr_img(img)  # Now returns list[str]
+                result = ocr_img(img)  
                 all_lines.extend(result)
             return all_lines
 
@@ -358,7 +361,7 @@ def ocr(path):
             if hand_lang_detector(img)=='english':
                 return trocr(path)
             if hand_lang_detector(img)=='french':
-                response = requests.post("http://127.0.0.1:5001/ocr", json={"image_path": path})
+                rresponse = requests.post(KRAKEN_API_URL, json={"image_path": path})
 
                 if response.ok:
                     return response.json().get("text", "").splitlines()
@@ -371,6 +374,7 @@ def ocr(path):
             if not is_clear(img):
                 img = preprocessing(img)
             return ocr_img(img)
+
 
 
 

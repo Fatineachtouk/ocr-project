@@ -1,0 +1,6 @@
+2025-07-15 17:51:06,868 - INFO - Binarizing <PIL.Image.Image image mode=L size=720x360 at 0x2CFB052ABC0>
+2025-07-15 17:51:07,050 - INFO - Segmenting <PIL.Image.Image image mode=L size=720x360 at 0x2CFB052A4D0>
+2025-07-15 17:51:07,269 - INFO - Compute reading order on 13 lines in lr direction
+2025-07-15 17:51:07,270 - INFO - Perform topological sort on partially ordered lines
+2025-07-15 17:51:07,274 - INFO - Loading model from E:\Projects\OCR\peraire2_ft_MMCFR.mlmodel
+2025-07-15 17:51:09,478 - WARNING - Recognizers with segmentation types {'baselines'} will be applied to segmentation of type bbox. This will likely result in severely degraded performace

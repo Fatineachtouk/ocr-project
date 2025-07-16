@@ -1,6 +1,10 @@
-from flask import Flask, request, jsonify
+import os
 from process import llm
+from dotenv import load_dotenv  
+from flask import Flask, request, jsonify
 
+
+load_dotenv()
 
 app = Flask(__name__)
 
@@ -15,4 +19,4 @@ def ocr_api():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
-    app.run(port=5000)
+    app.run(port=int(os.environ.get("MAIN_API_PORT", 5000)))

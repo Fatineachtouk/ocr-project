@@ -1,10 +1,16 @@
-from flask import Flask, request, jsonify
-from french_htr import kraken_ocr
+import os
 import traceback
+from dotenv import load_dotenv
+from french_htr import kraken_ocr
+from flask import Flask, request, jsonify
+
+load_dotenv()
+
 
 app = Flask(__name__)
 
-DEFAULT_MODEL_PATH = "peraire2_ft_MMCFR.mlmodel"
+DEFAULT_MODEL_PATH = os.environ["KRAKEN_MODEL_PATH"]
+
 
 @app.route('/ocr', methods=['POST'])
 def ocr_endpoint():
@@ -25,5 +31,5 @@ def ocr_endpoint():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(host='127.0.0.1', port=5001, debug=True, use_reloader=False)
+    app.run(debug=True, port=int(os.environ.get("KRAKEN_API_PORT", 5001)))
 
