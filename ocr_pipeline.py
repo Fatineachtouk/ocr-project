@@ -361,7 +361,7 @@ def ocr(path):
             if hand_lang_detector(img)=='english':
                 return trocr(path)
             if hand_lang_detector(img)=='french':
-                rresponse = requests.post(KRAKEN_API_URL, json={"image_path": path})
+                response = requests.post(KRAKEN_API_URL, json={"image_path": path})
 
                 if response.ok:
                     return response.json().get("text", "").splitlines()
