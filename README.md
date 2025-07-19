@@ -133,7 +133,7 @@ Some basic Git commands are:
   ]
 }
 ```
-## Input Format (JSON)
+## Output Format (JSON)
 ```json
 {
     "classification": "",
