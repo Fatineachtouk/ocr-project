@@ -70,6 +70,14 @@ pip install -r requirements-kraken.txt
 ```
 </details>
 
+## Downloading and installing ollama 
+Make sure ollama is setup, if not downloaded from the link : [download ollama](https://ollama.com/download), install it and then run the following in the terminal :
+
+```bash
+ollama pull gemma3:4b #or any other model 
+```
+
+
 ## Download Language Identification File (FastText)
 Download the [lid.176.bin](https://fasttext.cc/docs/en/language-identification.html) file from fastText and place it in the project folder (ocr-project).
 
