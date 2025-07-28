@@ -99,6 +99,8 @@ source kraken_env/bin/activate
 # Run Kraken server
 python kraken_app.py
 ```
+KRAKEN_API_URL=http://127.0.0.1:5001/ocr
+
 ### Main OCR & HTR API
 In the other terminal run the following :
 ```bash
@@ -113,6 +115,8 @@ source main_env/bin/activate
 # Run Kraken server
 python app.py
 ```
+MAIN_API_URL=http://127.0.0.1:5000/ocr_api
+
 ## Input Format (JSON)
 This is the expected format for the main API:
 Some basic Git commands are:
