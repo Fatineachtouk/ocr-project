@@ -1,18 +1,18 @@
 import os
 import re
 import json
-import ollama
 import textwrap
+import ollama
 from ocr_pipeline import ocr
-from dotenv import load_dotenv 
+from dotenv import load_dotenv
 
 load_dotenv()
 
-model=os.getenv('LLM_MODEL_NAME', 'gemma3:4b')
+model = os.getenv('LLM_MODEL_NAME', 'gemma3:4b')
 
 def query_ollama(prompt: str) -> str:
     response = ollama.chat(
-        model=model, 
+        model=model,
         messages=[{'role': 'user', 'content': prompt}]
     )
     return response['message']['content']
@@ -21,62 +21,98 @@ def clean_json_response(text: str) -> str:
     return re.sub(r"```(?:json)?\n|\n```", "", text).strip()
 
 def llm(input_data):
+    # OCR
     lines = ocr(input_data['filePath'])
-
     if not isinstance(lines, (list, tuple)):
-      lines = [str(lines)]
-
+        lines = [str(lines)]
     raw_text = " ".join(lines).strip()
+    formatted_text = textwrap.fill(raw_text, 80)
 
-    classification_block = ""
-    classification_classes = input_data['classificationOptions'][0]['class']
-    classification_desc = input_data['classificationOptions'][0]['description']
-    metadata_fields = input_data['classificationOptions'][1]['metadata']
+    # Prepare classification prompt
+    classification_lines = []
+    class_map = {}
 
-    metadata_part = "\n".join([f"- {f['fieldName']}: {f['description']}" for f in metadata_fields])
+    for option in input_data['classificationOptions']:
+        class_name = option['class']
+        description = option.get('description', '')
+        classification_lines.append(f"- {class_name}: {description}")
+        class_map[class_name] = option  # Store entire option for metadata later
 
-    if len(classification_classes) > 1:
-        classification_block = "\nClassification Options:\n" + "\n".join([
-            f"- {c}: {d}" for c, d in zip(classification_classes, classification_desc)
-        ])
+    classification_prompt = f"""
+You are a document classification expert.
 
-    prompt = f"""
-You are a meticulous document analyzer.
-Ignore police signature, security terms, expiration dates unless asked. Focus only on the descriptions given.
-Correct any OCR spelling issues if detected.
-Return a valid, clean JSON with 3 keys:
-- "content": the cleaned and corrected OCR content
-- "classification": the best matching class (if provided)
-- "metadata": a list of objects with "fieldName" and "value" (even if null)
-Don't hallucinate!
-Language Rules:
-- If two or more languages are present, prefer French if found.
-- If one language dominates, use it for the output.
-- OCR text is line-based; order matters.
-- First/last names may be uppercase especially in ID documents.
+Based on the OCR content below, choose the most appropriate class from the list.
 
 OCR Content:
-{textwrap.fill(raw_text, 80)}
-{classification_block}
+{formatted_text}
 
-Metadata Fields to Extract:
-{metadata_part}
+Classification Options:
+{chr(10).join(classification_lines)}
+ 
+Only return JSON in this format:
+{{ "classification": "CIN" }}
 """.strip()
 
-    # Call LLM
-    response = query_ollama(prompt)
-    cleaned_response = clean_json_response(response)
+    # Step 2: Run classification
+    raw_class_response = query_ollama(classification_prompt)
+    class_response = clean_json_response(raw_class_response)
 
     try:
-        parsed = json.loads(cleaned_response)
-        if "classification" in parsed and isinstance(parsed["classification"], str):
-            classification = parsed["classification"]
-            classification = classification.split(':')[0].strip()
-            classification = classification.split('(')[0].strip()
-            parsed["classification"] = classification
-    except json.JSONDecodeError:
-        parsed = {"error": "Failed to parse LLM response", "raw": response}
+        class_result = json.loads(class_response)
+        predicted_class = class_result.get("classification", "").strip()
+    except Exception:
+        return {
+            "error": "Failed to parse classification response",
+            "raw_class_response": raw_class_response
+        }
 
-    return parsed
+    if predicted_class not in class_map:
+        return {
+            "error": "Predicted class not in known classificationOptions",
+            "predicted": predicted_class
+        }
 
+    # Step 3: Metadata extraction for the predicted class
+    metadata = class_map[predicted_class].get("metadata", [])
+    metadata_instructions = "\n".join([
+        f"- {m['fieldName']}: {m['description']}" for m in metadata if m["fieldName"]
+    ])
 
+    metadata_prompt = f"""
+You are an expert in document information extraction.
+
+Based on the OCR content below, extract the following fields.
+
+OCR Content:
+{formatted_text}
+
+Metadata Fields to Extract:
+{metadata_instructions}
+
+Return only JSON in this format:
+{{
+  "metadata": [
+    {{ "fieldName": "full_name", "value": "..." }},
+    ...
+  ]
+}}
+""".strip()
+
+    raw_metadata_response = query_ollama(metadata_prompt)
+    metadata_response = clean_json_response(raw_metadata_response)
+
+    try:
+        metadata_result = json.loads(metadata_response)
+        metadata = metadata_result.get("metadata", [])
+    except Exception:
+        return {
+            "classification": predicted_class,
+            "error": "Failed to parse metadata response",
+            "raw_metadata_response": raw_metadata_response
+        }
+
+    return {
+        "classification": predicted_class,
+        "content": raw_text,
+        "metadata": metadata
+    }
