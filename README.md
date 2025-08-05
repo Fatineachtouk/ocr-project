@@ -119,7 +119,6 @@ MAIN_API_URL=http://127.0.0.1:5000/ocr_api
 
 ## Input Format (JSON)
 This is the expected format for the main API:
-Some basic Git commands are:
 ```json
 {
   "filePath": "",
