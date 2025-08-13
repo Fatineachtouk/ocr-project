@@ -18,7 +18,19 @@ def query_ollama(prompt: str) -> str:
     return response['message']['content']
 
 def clean_json_response(text: str) -> str:
-    return re.sub(r"```(?:json)?\n|\n```", "", text).strip()
+    # Extract fenced block if present
+    match = re.search(r"```(?:json)?\s*(.*?)\s*```", text, re.DOTALL)
+    if match:
+        candidate = match.group(1).strip()
+    else:
+        candidate = text.strip()
+    
+    # Find the first complete JSON object or array
+    json_match = re.search(r'(\{.*?\}|\[.*?\])', candidate, re.DOTALL)
+    if json_match:
+        candidate = json_match.group(1).strip()
+    
+    return candidate
 
 def llm(input_data):
     lines = ocr(input_data['filePath'])
