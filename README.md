@@ -140,3 +140,37 @@ This is the expected format for the main API:
 ```
 
 
+## Output Format (JSON)
+This is the expected output format from the main API:
+```json
+{
+    "classification": "",
+    "content": "",
+    "metadata": [
+        {
+            "fieldName": "",
+            "value": ""
+        },
+        {
+            "fieldName": "",
+            "value": ""
+        },
+        {
+            "fieldName": "",
+            "value": ""
+        },
+        {
+            "fieldName": "",
+            "value": ""
+        }
+    ]
+}
+```
+
+
+
+
+
+
+
+
