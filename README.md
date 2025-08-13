@@ -21,7 +21,7 @@ The main OCR & HTR pipeline communicates with the Kraken model through an HTTP A
 
 ### Brief explanation of eaxh file :
 - **ocr_pipeline.py**: All the functions used to extract the text, here's a visual of the pipeline:
-- 
+  
   <img width="1074" height="840" alt="Blank diagram" src="https://github.com/user-attachments/assets/c4fedffa-448a-4e55-bbc4-0745dc8f5cf7" />
 - **process.py**: Once the text is extracted, it will be given to the LLM to extract certain metadata and classifies the type of the document.
 - **french_htr.py**: Functions to extract handwritten french text.
