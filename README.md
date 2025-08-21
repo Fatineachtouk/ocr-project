@@ -115,18 +115,45 @@ python app.py
 This is the expected format for the main API:
 ```json
 {
-  "filePath": "",  
+  "filePath": "",
   "classificationOptions": [
     {
-      "class": ["option1", "option2", "option3", "option4"],  
-      "description": [
-        "",
-        "",
-        "",
-        ""
+
+      "class": "option1",
+      "description":"",
+      "metadata": [
+        { "fieldName": "option1", "description": "" },
+        { "fieldName": "option2", "description": "" },
+        { "fieldName": "", "description": "" },
+        { "fieldName": "", "description": "" },
+        { "fieldName": "", "description": "" }
       ]
     },
     {
+      "class": "option2",
+      "description":"",
+      "metadata": [
+        { "fieldName": "option1", "description": "" },
+        { "fieldName": "option2", "description": "" },
+        { "fieldName": "", "description": "" },
+        { "fieldName": "", "description": "" },
+        { "fieldName": "", "description": "" }
+      ]
+    },
+    {
+      "class": "option3",
+      "description":"",
+      "metadata": [
+        { "fieldName": "option1", "description": "" },
+        { "fieldName": "option2", "description": "" },
+        { "fieldName": "", "description": "" },
+        { "fieldName": "", "description": "" },
+        { "fieldName": "", "description": "" }
+      ]
+    },
+    {
+      "class": "option4",
+      "description":"",
       "metadata": [
         { "fieldName": "option1", "description": "" },
         { "fieldName": "option2", "description": "" },
